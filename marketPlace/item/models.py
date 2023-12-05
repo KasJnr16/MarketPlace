@@ -22,7 +22,7 @@ class Item(models.Model):
     name = models.CharField(max_length=255)
     description = models.TextField(blank=True, null=True)
     price = models.DecimalField(max_digits=6 ,decimal_places=2)
-    image = models.ImageField(upload_to="item_images", blank=True, null=True) #install Pillow to handle pics
+    image = models.ImageField(upload_to="item_images" ,null=True, blank=True) #install Pillow to handle pics
     is_sold = models.BooleanField(default=False)
     created_by = models.ForeignKey(User, related_name="items", on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)

@@ -4,12 +4,14 @@ from .views import(
     newitem,
     delete,
     edit,
+    items,
 )
 
 # adding a name space
 app_name = "item"
 
 urlpatterns = [
+    path("",items, name = "items"),
     path("new-item/",newitem, name="newitem"),
     path("<int:pk>/",detail, name="detail"),
     path("<int:pk>/delete",delete, name="delete"),
