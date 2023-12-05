@@ -14,6 +14,7 @@ from django.http import HttpResponse
 
 # Create your views here.
 
+@login_required()
 def items(request):
     query = request.GET.get("query", "")
     categories = Category.objects.all()
@@ -81,6 +82,7 @@ def edit(request, pk):
         "title": "Edit item"
     })
 
+@login_required
 def delete(request, pk):
     item = get_object_or_404(Item, pk=pk, created_by=request.user)
     item.delete()

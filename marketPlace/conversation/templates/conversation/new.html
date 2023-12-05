@@ -1,15 +1,15 @@
 {% extends "core/base.html" %}
 
-{% block title %}{{ title }}{% endblock%}
+{% block title %}New Conversation{% endblock %}
 
 {% block content %}
 <section>
-    <h1 class="mb-6 text-3xl">{{ title }}</h1>
+    <h1 class="mb-6 text-3xl">New Conversation</h1>
 
-    <form method="POST"  enctype="multipart/form-data">
-        {% csrf_token %}
+    <form method="POST" action=".">
         <div class="space-y-4">
-            {{ form.as_p }}
+        {% csrf_token %}
+        {{ form.as_p }}
         </div>
 
     {% if form.errors %}
@@ -23,7 +23,7 @@
     {% endif %}
 
      <button class="mt-6 py-4 px-6 text-lg bg-teal-500 hover:bg-teal-700 rounded-xl text-white" type="sumbit">
-        Submit
+        Send
     </button>
     </form>
 </section>
