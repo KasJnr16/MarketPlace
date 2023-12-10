@@ -19,8 +19,8 @@ urlpatterns = [
     path("<int:pk>/",detail, name="detail"),
     path("<int:pk>/delete",delete, name="delete"),
     path("<int:pk>/edit",edit, name="edit"),
-    path('add-to-cart/<int:item_id>/', add_to_cart, name='add_to_cart'),
-    path('remove-from-cart/<int:item_id>/', remove_from_cart, name='remove_from_cart'),
+    path('cart/add-to-cart/<int:item_id>/', add_to_cart, name='add_to_cart'),
+    path('cart/remove-from-cart/<int:item_id>/', remove_from_cart, name='remove_from_cart'),
     path('cart/', cart_view, name='cart_view'),
     
 ]
