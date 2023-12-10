@@ -21,6 +21,17 @@
                     <div class="p-6 bg-white rounded-b-xl">
                         <h2 class="text-2xl">{{ item.name }}</h2>
                         <p class="text-gray-500">Price: GHC {{ item.price }}</p>
+
+                        {% if request.user != item.created_by %}
+                        {% if user.is_authenticated %}
+                            <form method="post" action="{% url 'item:add_to_cart' item.id %}">
+                                {% csrf_token %}
+                                <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded-md">
+                                    Add to Cart
+                                </button>
+                            </form>
+                        {% endif %}
+                        {% endif %}
                     </div>
                 </a>
             </div>

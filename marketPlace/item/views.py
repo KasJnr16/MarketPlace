@@ -4,13 +4,14 @@ from django.db.models import Q
 from .models import(
     Item,
     Category,
+    ShoppingCart,
+    CartItem,
+
 )
 from .forms import(
     NewItemForm,
     EditItemForm,
 )
-from django.http import HttpResponse
-
 
 # Create your views here.
 
@@ -88,4 +89,40 @@ def delete(request, pk):
     item.delete()
 
     return redirect("dashboard:index")
+
+def add_to_cart(request, item_id):
+    item = get_object_or_404(Item, pk=item_id)
+    user_cart, created = ShoppingCart.objects.get_or_create(user=request.user)
+    cart_item, created = CartItem.objects.get_or_create(cart=user_cart, item=item)
+
+    if not created:
+        cart_item.quantity +=1
+        cart_item.save()
+    
+    return redirect("/")
+
+from django.shortcuts import get_object_or_404, redirect
+from .models import Item, ShoppingCart, CartItem
+
+def remove_from_cart(request, item_id):
+    cart_item = get_object_or_404(CartItem, pk=item_id, cart__user=request.user)
+
+    if cart_item.quantity > 1:
+        cart_item.quantity -= 1
+        cart_item.save()
+    else:
+        cart_item.delete()
+    return redirect("item:cart_view")
+
+    
+def cart_view(request):
+    user_cart = get_object_or_404(ShoppingCart, user=request.user)
+    cart_items = CartItem.objects.filter(cart=user_cart)
+    total_price = sum(cart_item.item.price * cart_item.quantity for cart_item in cart_items)
+    
+    return render(request, "item/cart_view.html", {
+        "cart_items": cart_items,
+        "total_price": total_price,
+        "user_cart": user_cart,
+    })
         

@@ -11,7 +11,13 @@
   </head>
   <body>
     {% include "core/partials/_header.html" %}
-    <div class="px-6 py-6">{% block content %} {% endblock %}</div>
+    <div class="px-6 py-6">
+      {% block content %} {% endblock %}
+    </div>
     {% include "core/partials/_footer.html" %}
+
+
+    <!-- jquery -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
   </body>
 </html>

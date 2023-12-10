@@ -29,3 +29,20 @@ class Item(models.Model):
 
     def __str__(self) -> str:
         return self.name
+    
+class ShoppingCart(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    items = models.ManyToManyField(Item, through="CartItem")
+
+    def __str__(self) -> str:
+        return f"Shopping Cart for {self.user.username}"
+    
+class CartItem(models.Model):
+    item = models.ForeignKey(Item, on_delete=models.CASCADE)
+    cart = models.ForeignKey(ShoppingCart, on_delete=models.CASCADE)
+    quantity = models.PositiveIntegerField(default=1)
+
+    def __str__(self) -> str:
+        return f"{self.quantity} x {self.item.name} in {self.cart}"
+    
+
