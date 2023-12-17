@@ -5,41 +5,55 @@
   <h2 class="text-2xl mb-4 text-center">Shopping Cart</h2>
 
   {% if user_cart %}
-  {% if cart_items %}
-  <div class="grid grid-cols-3 gap-3">
+    {% if cart_items %}
+    <div class="grid grid-cols-3 gap-3">
 
-    {% for cart_item in cart_items %}
-    <div>
-      <img src="{{ cart_item.item.image.url }}" class="rounded-t-xl img-item" />
-      <div class="block p-8 px-5 bg-white rounded-b-xl">
-        <h2 class="text-2xl">{{ cart_item.item.name }}
-            <span>{{ cart_item.quantity }}</span>
-        </h2>
-        <span class="mr-2 ">GHC {{ cart_item.item.price }}</span>
-        <br class="p-3">
-        <br class="p-3">
-        <a
-          href="{% url 'item:remove_from_cart' item_id=cart_item.id %}"
-          class="bg-red-500 hover:bg-red-700 text-white px-4 py-2 rounded-md mb-1 mt-9"
-          >Remove</a
-        >
+      {% for cart_item in cart_items %}
+      <div>
+        <img src="{{ cart_item.item.image.url }}" class="rounded-t-xl img-item" />
+        <div class="block p-8 px-5 bg-white rounded-b-xl">
+          <h2 class="text-2xl">{{ cart_item.item.name }}
+              <span>({{ cart_item.quantity }})</span>
+          </h2>
+          <span class="mr-2 ">GHC {{ cart_item.item.price }}</span>
+          <br class="p-3">
+          <br class="p-3">
+          <a
+            href="{% url 'item:remove_from_cart' item_id=cart_item.id %}"
+            class="bg-red-500 hover:bg-red-700 text-white px-4 py-2 rounded-md mb-1 mt-9"
+            >Remove</a
+          >
+        </div>
       </div>
+      {% endfor %}
     </div>
-    {% endfor %}
-  </div>
+    <hr class="mt-4">
+    <h2 class="text-2xl mb-4 mt-4 text-center">Your Address</h2>
+      {% if request.user %}
+        <form method="POST">
+          {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit" class="mt-6 py-4 px-6 text-lg bg-teal-500 hover:bg-teal-700 rounded-xl text-white">
+                Save
+            </button>
+        </form>
+        {% endif %}
 
-  <p class="mt-6 text-teal-500">Total Price: GHC {{ total_price }}</p>
-  <br class="mt-4" />
-  <a
-    href=""
-    class="bg-blue-500 hover:bg-blue-700 text-white px-4 py-2 rounded-md mt-8"
-    >Proceed to Checkout</a
-  >
+    <p class=" text-teal-500">Total Price: GHC {{ total_price }}</p>
+    <br class="mt-4" />
+    <a
+      href="{% url 'checkout:add_to_checkout' shoppingCart_id=user_cart.id %}"
+      class="bg-blue-500 hover:bg-blue-700 text-white px-4 py-2 rounded-md mt-8"
+      >Proceed to Checkout</a
+    >
+    {% else %}
+    <p class="text-3xl text-center">Your shopping cart is empty.</p>
+    {% endif %}
   {% else %}
-  <p class="text-3xl text-center">Your shopping cart is empty.</p>
-  {% endif %}
+    <p class="text-3xl text-center">You don't have a shopping cart yet. Add items to your cart to see them here.</p>
   {% endif %}
 </div>
+</section>
 
 <style>
   .img-item {

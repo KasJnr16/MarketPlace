@@ -12,6 +12,8 @@ from .forms import(
     NewItemForm,
     EditItemForm,
 )
+from checkout.forms import AddressForm
+from checkout.models import Address
 
 # Create your views here.
 
@@ -101,9 +103,6 @@ def add_to_cart(request, item_id):
     
     return redirect("/")
 
-from django.shortcuts import get_object_or_404, redirect
-from .models import Item, ShoppingCart, CartItem
-
 def remove_from_cart(request, item_id):
     cart_item = get_object_or_404(CartItem, pk=item_id, cart__user=request.user)
 
@@ -116,13 +115,47 @@ def remove_from_cart(request, item_id):
 
     
 def cart_view(request):
-    user_cart = get_object_or_404(ShoppingCart, user=request.user)
-    cart_items = CartItem.objects.filter(cart=user_cart)
-    total_price = sum(cart_item.item.price * cart_item.quantity for cart_item in cart_items)
+    try:
+        user_cart = ShoppingCart.objects.get(user=request.user)
+    except ShoppingCart.DoesNotExist:
+        user_cart = None
+
+    if user_cart:
+        cart_items = CartItem.objects.filter(cart=user_cart)
+        total_price = sum(cart_item.item.price * cart_item.quantity for cart_item in cart_items)
+
     
-    return render(request, "item/cart_view.html", {
-        "cart_items": cart_items,
-        "total_price": total_price,
-        "user_cart": user_cart,
-    })
-        
+        if request.method == "POST":
+            form = AddressForm(
+                request.POST
+            )
+
+            if form.is_valid():
+                user = request.user
+                street = form.cleaned_data["street"]
+                city = form.cleaned_data["city"]
+                region = form.cleaned_data["region"]
+                zip_code = form.cleaned_data["zip_code"]
+
+                form_instance = Address.objects.create(
+                    user=user,
+                    street=street,
+                    city=city,
+                    region=region,
+                    zip_code=zip_code
+                )
+                form_instance.save()
+    
+        else:
+            form = AddressForm()
+            
+        return render(request, "item/cart_view.html", {
+            "cart_items": cart_items,
+            "total_price": total_price,
+            "user_cart": user_cart,
+            "form":form,
+        })
+    else:
+        return render(request, "item/cart_view.html", {
+            "user_cart": None,
+        })

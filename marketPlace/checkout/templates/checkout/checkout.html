@@ -1,0 +1,27 @@
+{% extends "core/base.html" %} 
+
+{% block title %}Checkout{% endblock %} 
+
+{% block content %}
+<section>
+  <div class="mt-6 px-6 py-12 bg-gray-100 rounded-xl">
+      {% if request.user %}
+          {% if checkout.is_completed %}
+              <p class="text-center text-3xl">{{ checkout.shopping_cart.user }}</p>
+              <div>
+                  <p>User Address: {{ checkout.shipping_address }}</p>
+                  {% for cart_item in cart_items %}
+                      <div>
+                          <p>{{ cart_item.item.name }}
+                              <span>GHC {{ cart_item.item.price }}</span></p>
+                      </div>
+                  {% endfor %}
+              </div>
+          {% else %}
+              <p class="text-center text-3xl">{{ checkout.shopping_cart.user }}</p>
+              <p class="text-center text-3xl">You have not checked out your Cart yet.</p>
+          {% endif %}
+      {% endif %}
+  </div>
+</section>
+{% endblock %}
